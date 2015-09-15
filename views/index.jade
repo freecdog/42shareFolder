@@ -21,23 +21,6 @@ html(ng-app="jShareFolderApp")
                 data-tree-model="roleList"
                 data-node-id="roleId"
                 data-node-label="roleName"
+                data-node-size="size"
                 data-node-children="children"
             )
-
-        hr
-        div(ng-controller="jShareFolderController" class="container-fluid")
-            div(class="row")
-                div(ng-repeat="folder in folders track by $index")
-                    div(class="container-fluid")
-                        div(class="row")
-                            h3 {{folder}}
-                        div(ng-repeat="video in subvideos[$index] track by $index")
-                            div(class="row")
-                                a(ng-href="{{video}}") {{video}}
-                                span {{subsizes[$parent.$index][$index]}} mb
-            //-
-                h3 All files
-                div(ng-repeat="video in videos track by $index")
-                    div(class="container-fluid")
-                        div(class="row")
-                            a(ng-href="{{video}}") {{video}}

@@ -10,52 +10,6 @@
 
     var jShareFolderControllers = angular.module('jShareFolderControllers', ['angularTreeview']);
 
-
-    jShareFolderControllers.controller('jShareFolderController', ['$scope', '$http', function($scope, $http) {
-
-        init();
-
-        function init(){
-            $scope.videos = [];
-            $scope.folders = [];
-            $scope.subvideos = [];
-            $scope.sizes = [];
-            $scope.subsizes = [];
-
-            $http.get('/api/videos')
-                .success(function(data){
-                    $scope.videos = data.files;
-                    $scope.folders = data.folders;
-                    $scope.sizes = data.sizes;
-
-                    $scope.subvideos = [];
-                    $scope.subsizes = [];
-                    for (var i = 0; i < $scope.folders.length; i++){
-                        var folder = $scope.folders[i];
-                        var subvideos = [];
-                        var subsizes = [];
-                        for (var j = 0; j < $scope.videos.length; j++){
-                            var video = $scope.videos[j];
-                            var size = $scope.sizes[j];
-                            if (video.indexOf(folder + "/") != -1){
-                                subvideos.push(video);
-                                subsizes.push(size);
-                            }
-                        }
-                        $scope.subvideos.push(subvideos);
-                        $scope.subsizes.push(subsizes / 1024 / 1024);
-                    }
-
-                    console.log($scope.videos);
-                    console.log($scope.sizes);
-                })
-                .error(function(err){
-                    console.log("/api/videos failed :C, trying one more time, error:", err);
-                });
-        }
-
-    }]);
-
     jShareFolderControllers.controller('jShareFolderNewController', ['$scope', '$http', function($scope, $http) {
 
         init();
@@ -78,6 +32,7 @@
                             }
                         } else {
                             tree.children = [];
+                            tree.size = (tree.stats.size / 1024 / 1024).toFixed(2);
                         }
                     }
                     treeProcess(data.allObjects[0]);
