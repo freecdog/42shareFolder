@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 
-function isFile(filename){
+function isValidFile(filename){
     var filenameNorm = filename.toLowerCase();
     if (filenameNorm.indexOf('mp4') != -1 ||
 
@@ -50,14 +50,14 @@ router.get('/videos', function(req, res, next) {
                 folders.push(folder);
                 var subFiles = fs.readdirSync(sharedPath + '/' + folder);
                 _.forEach(subFiles, function(subFileName){
-                    if (isFile(subFileName)){
+                    if (isValidFile(subFileName)){
                         files.push(folder + "/" + subFileName);
                         sizes.push(stats.size);
-                        console.log(subFileName, stats);
+                        //console.log(subFileName, stats);
                     }
                 });
             } else {
-                if (isFile(pathname)) {
+                if (isValidFile(pathname)) {
                     files.push(pathname);
                     sizes.push(stats.size);
                 }
@@ -74,34 +74,54 @@ router.get('/videos', function(req, res, next) {
     });
 });
 
+router.get('/files', function(req, res, next){
+    var sharedFolder = req.app.sharedFolder;
+
+    readFolderRecursive(sharedFolder, 0, function(err, data){
+        if (err) throw err;
+
+        res.send(data);
+    });
+});
+
 var async = require('async');
 function readFolderRecursive(item, level, cb) {
     level = typeof level !== 'undefined' ? level : 0;
 
+    var recursionData = {};
+
+    recursionData.statistics = {};
+    recursionData.statistics.timestamp = new Date().getTime();
+
     var allObjects = [];
-    var objType;
 
     var allFiles = [];
 
-    if (level > 3) {
-        cb(null, allFiles, allObjects);
+    recursionData.allFiles = allFiles;
+    recursionData.allObjects = allObjects;
+
+    if (level > 2) {
+        cb(null, recursionData);
         return;
     }
 
-    var currentObj = {
-        path: item
-        //, stats: stats
-    };
-    allObjects.push(currentObj);
-
     // fs.lstat
     fs.stat(item, function(err, stats) {
+        if (err) throw err;
+
+        var objType;
+
+        var currentObj = {
+            path: item
+            //, stats: stats
+        };
 
         if (!err && stats.isDirectory()) {
 
             objType = 'folder';
             currentObj.type = objType;
             currentObj.children = [];
+            allObjects.push(currentObj);
 
             fs.readdir(item, function(err, list) {
                 if (err) return cb(err);
@@ -109,19 +129,19 @@ function readFolderRecursive(item, level, cb) {
                 async.forEach(
                     list,
                     function(diritem, callback) {
-                        readFolderRecursive(path.join(item, diritem), level+1, function(err, manyFiles, manyObjects) {
+                        readFolderRecursive(path.join(item, diritem), level+1, function(err, data) {
 
-                            //console.log('mf', manyFiles);
-                            for (var someFile in manyFiles){
-                                if (manyFiles.hasOwnProperty(someFile)){
-                                    allFiles.push(manyFiles[someFile]);
+                            //console.log('mf', data.allFiles);
+                            for (var someFile in data.allFiles){
+                                if (data.allFiles.hasOwnProperty(someFile)){
+                                    allFiles.push(data.allFiles[someFile]);
                                 }
                             }
-                            //console.log('af', allFiles);
+                            //console.log('af', data.allFiles);
 
-                            for (var someObject in manyObjects){
-                                if (manyObjects.hasOwnProperty(someObject)){
-                                    currentObj.children.push(manyObjects[someObject]);
+                            for (var someObject in data.allObjects){
+                                if (data.allObjects.hasOwnProperty(someObject)){
+                                    currentObj.children.push(data.allObjects[someObject]);
                                 }
                             }
 
@@ -129,8 +149,13 @@ function readFolderRecursive(item, level, cb) {
                         });
                     },
                     function(err) {
-                        //console.log('aaff', level, allFiles);
-                        cb(err, allFiles, allObjects);
+
+                        if (level == 0){
+                            recursionData.statistics.timestamp = (new Date().getTime()) - recursionData.statistics.timestamp;
+                            console.log(recursionData.statistics.timestamp, 'msec');
+                        }
+
+                        cb(err, recursionData);
                     }
                 );
             });
@@ -140,24 +165,26 @@ function readFolderRecursive(item, level, cb) {
             objType = 'file';
             currentObj.type = objType;
 
-            allFiles.push({
-                path: item
-                //, stats: stats
-                , type: objType
-            });
-            cb(err, allFiles, allObjects);
+            if (isValidFile(item)){
+                allObjects.push(currentObj);
+
+                allFiles.push({
+                    path: item
+                    //, stats: stats
+                    , type: objType
+                });
+            }
+
+            cb(err, recursionData);
         }
     });
 }
-var timeStamp = (new Date()).getTime();
-readFolderRecursive(path.join('x:', '1'), 0, function(err, lotsOfFiles, lotsOfObjects){
 
+readFolderRecursive(path.join('x:', '1'), 0, function(err, data){
     //for (var index in lotsOfFiles){
     //    console.log(index, lotsOfFiles[index]);
     //}
     //console.log(JSON.stringify(lotsOfObjects));
-
-    console.log( ((new Date()).getTime() - timeStamp), 'msec' );
 });
 
 //http://stackoverflow.com/a/7550430

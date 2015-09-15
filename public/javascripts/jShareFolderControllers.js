@@ -8,7 +8,7 @@
 
     console.log("jShareFolderControllers", angular);
 
-    var jShareFolderControllers = angular.module('jShareFolderControllers', []);
+    var jShareFolderControllers = angular.module('jShareFolderControllers', ['angularTreeview']);
 
 
     jShareFolderControllers.controller('jShareFolderController', ['$scope', '$http', function($scope, $http) {
@@ -50,10 +50,58 @@
                     console.log($scope.sizes);
                 })
                 .error(function(err){
-                    console.log("give up failed :C, trying one more time, error:", err);
+                    console.log("/api/videos failed :C, trying one more time, error:", err);
                 });
         }
 
     }]);
+
+    jShareFolderControllers.controller('jShareFolderNewController', ['$scope', '$http', function($scope, $http) {
+
+        init();
+
+        $scope.roleList = [];
+
+        function init(){
+            $scope.data = {};
+
+            $http.get('/api/files')
+                .success(function(data){
+
+                    function treeProcess(tree){
+                        if (tree.hasOwnProperty('path')){
+                            tree.roleName = tree.path;
+                        }
+                        if (tree.hasOwnProperty('children')){
+                            for (var i = 0; i < tree.children.length; i++){
+                                treeProcess(tree.children[i]);
+                            }
+                        } else {
+                            tree.children = [];
+                        }
+                    }
+                    treeProcess(data.allObjects[0]);
+
+                    $scope.data = data;
+
+                    $scope.roleList = data.allObjects;
+
+                    console.log('/api/files', $scope.data);
+                })
+                .error(function(err){
+                    console.log("/api/files failed :C, trying one more time, error:", err);
+                });
+        }
+
+    }]);
+
+    jShareFolderControllers.directive('sharedFolder', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'shared-folder.html',
+            controller: 'jShareFolderNewController',
+            controllerAs: 'sharedObjects'
+        };
+    });
 
 })(angular);

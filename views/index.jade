@@ -12,8 +12,20 @@ html(ng-app="jShareFolderApp")
         //-link(rel='stylesheet' href='http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css')
         //-link(rel='stylesheet' href='/bootstrap/css/bootstrap-theme.css')
         script(src='/javascripts/ui-bootstrap-tpls-0.12.0.js')
-    body(ng-controller="jShareFolderController")
-        div(class="container-fluid")
+        script(src='/javascripts/angular.treeview.js')
+    body()
+        div(ng-controller="jShareFolderNewController")
+            div(
+                data-angular-treeview="true"
+                data-tree-id="mytree"
+                data-tree-model="roleList"
+                data-node-id="roleId"
+                data-node-label="roleName"
+                data-node-children="children"
+            )
+
+        hr
+        div(ng-controller="jShareFolderController" class="container-fluid")
             div(class="row")
                 div(ng-repeat="folder in folders track by $index")
                     div(class="container-fluid")
