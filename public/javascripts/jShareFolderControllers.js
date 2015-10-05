@@ -14,7 +14,8 @@
 
         init();
 
-        $scope.roleList = [];
+        //$scope.roleList = [];
+        $scope.roleList = [{roleName:'Loading'}];
 
         function init(){
             $scope.data = {};

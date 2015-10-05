@@ -67,7 +67,7 @@
 							'<i class="expanded" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 							'<i class="normal" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
 							'<a href="{{node.' + nodeLabel + '}}" data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</a>' +
-							'<span> {{node.' + nodeSize + '}} Mb</span>' +
+							'<span ng-show="node.'+nodeSize+' "> {{node.' + nodeSize + '}} Mb</span>' +
 							'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
 						'</li>' +
 					'</ul>';

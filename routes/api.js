@@ -166,7 +166,7 @@ function isValidFile(filename){
     var isValid = false;
     var filenameNorm = filename.toLowerCase();
     var filenameNormLen = filenameNorm.length;
-    var matches = ['mp4', 'avi', 'mkv', 'srt', 'pdf', 'zip', 'jpg', 'png', 'img'];
+    var matches = ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', 'jpg', 'png', 'img'];
 
     var filenameNorm3 = filenameNorm.substr(filenameNormLen - 3, 3);
     for (var i = 0, len = matches.length; i < len; i++){
