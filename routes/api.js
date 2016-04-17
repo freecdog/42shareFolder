@@ -117,7 +117,10 @@ function readFolderRecursive(item, level, exclusions, cb) {
 
                             function treeProcess(tree){
                                 if (tree.hasOwnProperty('path')){
-                                    tree.path = tree.path.substr(recursionData.private.homePath.length, tree.path.length - recursionData.private.homePath.length);
+                                    var homePathLength = recursionData.private.homePath.length;
+                                    if (recursionData.private.homePath[0] === "." && recursionData.private.homePath[1] === '/') homePathLength -= 2;
+
+                                    tree.path = tree.path.substr(homePathLength, tree.path.length - homePathLength);
 
                                     // probably this command could be moved to client side
                                     tree.path = tree.path.replace(/\\/g, "/");
