@@ -22,7 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.sharedFolder = path.join('W:', '1', '!distr', 'ubuntu mate');
-app.sharedFolder = path.join('X:', '1');
+app.sharedFolder = path.join('W:', '1');
+//app.sharedFolder = path.join('X:', '1');
 //app.sharedFolder = path.join('X:', 'pro', '!codeschool.com');
 app.use(express.static( app.sharedFolder ));
 

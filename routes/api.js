@@ -23,8 +23,8 @@ router.get('/files', function(req, res, next){
     });
 });
 
-//http://stackoverflow.com/a/7550430
 function readFolderRecursive(item, level, exclusions, cb) {
+    //http://stackoverflow.com/a/7550430
     level = typeof level !== 'undefined' ? level : 0;
 
     var recursionData = {};
@@ -86,13 +86,13 @@ function readFolderRecursive(item, level, exclusions, cb) {
             currentObj.children = [];
             allObjects.push(currentObj);
 
-            fs.readdir(item, function(err, list) {
+            fs.readdir(currentObj.path, function(err, list) {
                 if (err) return cb(err);
 
                 async.forEach(
                     list,
                     function(diritem, callback) {
-                        readFolderRecursive(path.join(item, diritem), level+1, exclusions, function(err, data) {
+                        readFolderRecursive(path.join(currentObj.path, diritem), level+1, exclusions, function(err, data) {
 
                             for (var someFile in data.allFiles){
                                 if (data.allFiles.hasOwnProperty(someFile)){
@@ -113,7 +113,7 @@ function readFolderRecursive(item, level, exclusions, cb) {
 
                         if (level == 0){
                             recursionData.statistics.timestamp = (new Date().getTime()) - recursionData.statistics.timestamp;
-                            console.log(recursionData.statistics.timestamp, 'msec');
+                            console.log(recursionData.statistics.timestamp, 'msec to finish recursion');
 
                             function treeProcess(tree){
                                 if (tree.hasOwnProperty('path')){
@@ -147,11 +147,11 @@ function readFolderRecursive(item, level, exclusions, cb) {
             objType = 'file';
             currentObj.type = objType;
 
-            if (isValidFile(item)){
+            if (isValidFile(currentObj.path)){
                 allObjects.push(currentObj);
 
                 allFiles.push({
-                    path: item
+                    path: currentObj.path
                     //, stats: stats
                     , type: objType
                 });
@@ -166,11 +166,13 @@ function isValidFile(filename){
     var isValid = false;
     var filenameNorm = filename.toLowerCase();
     var filenameNormLen = filenameNorm.length;
-    var matches = ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', 'jpg', 'png', 'img'];
+    var matches = ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', '7z', 'jpg', 'png', 'img', 'mp3'];
 
-    var filenameNorm3 = filenameNorm.substr(filenameNormLen - 3, 3);
+    var filenameEnding, mLength;
     for (var i = 0, len = matches.length; i < len; i++){
-        if (filenameNorm3 == matches[i]){
+        mLength = matches[i].length;
+        filenameEnding = filenameNorm.substr(filenameNormLen - mLength, mLength);
+        if (filenameEnding == matches[i]){
             isValid = true;
             break;
         }
