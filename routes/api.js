@@ -169,7 +169,7 @@ function isValidFile(filename){
     var isValid = false;
     var filenameNorm = filename.toLowerCase();
     var filenameNormLen = filenameNorm.length;
-    var matches = ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', '7z', 'jpg', 'png', 'img', 'mp3', 'apk', 'mka', 'ac3'];
+    var matches = ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', '7z', 'jpg', 'png', 'img', 'mp3', 'apk', 'mka', 'ac3', 'dmg', 'iso'];
 
     var filenameEnding, mLength;
     for (var i = 0, len = matches.length; i < len; i++){
