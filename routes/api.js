@@ -12,16 +12,26 @@ var async = require('async');
 router.get('/files', function(req, res, next){
     var sharedFolder = req.app.sharedFolder;
 
-    var exclusions = ['!channel', '!distr', '!jnote', '0', 'Ansys', 'Call of Duty 2', 'ChessPlanet', 'CoD2 1.3', 'd2',
-        'Disciples', 'domru.ru', 'HL2 EP1', 'HMM3 WoG', 'HMM375', 'HMM375WT', 'HMM5', 'INP', 'j_old_notehdd_1',
-        'Need For Speed Most Wanted (2005)', 'Need For Speed Underground 2', 'Nox', 'Robin Hood game', 'Sims 3'];
+    var exclusions = [];
 
+    console.time("readFolderRecursive");
     readFolderRecursive(sharedFolder, 0, exclusions, function(err, data){
+        console.timeEnd("readFolderRecursive");
         if (err) throw err;
 
         res.send(data);
     });
 });
+
+var jrf = require("../jReadFolder");
+router.get('/test', function(req, res, next){
+    var sharedFolder = req.app.sharedFolder;
+
+    jrf(sharedFolder, function(data){
+        res.send(`done, ${data.length}`);
+    });
+});
+
 
 function readFolderRecursive(item, level, exclusions, cb) {
     //http://stackoverflow.com/a/7550430
@@ -29,7 +39,7 @@ function readFolderRecursive(item, level, exclusions, cb) {
 
     var recursionData = {};
 
-    if (level == 0){
+    if (level === 0){
         recursionData.private = {};
 
         recursionData.private.homePath = item;
@@ -58,12 +68,12 @@ function readFolderRecursive(item, level, exclusions, cb) {
     var lastPart = item.substr(lastPartIndex + 1, item.length - lastPartIndex - 1);
     var isExclusion = false;
     for (var excIndex = 0; excIndex < exclusions.length; excIndex++){
-        if (exclusions[excIndex] == lastPart){
+        if (exclusions[excIndex] === lastPart){
             isExclusion = true;
             break;
         }
     }
-    if (isExclusion == true) {
+    if (isExclusion === true) {
         stopRecursion();
         return;
     }
@@ -111,7 +121,7 @@ function readFolderRecursive(item, level, exclusions, cb) {
                     },
                     function(err) {
 
-                        if (level == 0){
+                        if (level === 0){
                             recursionData.statistics.timestamp = (new Date().getTime()) - recursionData.statistics.timestamp;
                             console.log(recursionData.statistics.timestamp, 'msec to finish recursion');
 

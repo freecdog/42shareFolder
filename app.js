@@ -21,7 +21,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.sharedFolder = path.join('X:', '1');
+app.sharedFolder = path.join('D:', 'DATA', 'pro');
+// app.sharedFolder = path.join('C:', 'Windows', 'System32', 'LogFiles');
+// app.sharedFolder = path.join("C:\\Windows\\System32\\LogFiles\\HTTPERR");
+// app.sharedFolder = path.join('D:', 'DATA', 'pro', 'nodejs', '53miningSchedule', 'xml');
+// app.sharedFolder = path.join('X:', '1');
 
 //app.use(express.static( app.sharedFolder ));
 checkPathArgv(function(err, argPath){
