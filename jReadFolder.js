@@ -42,8 +42,8 @@ let readFolder = function(folder, options, callback){
         cutRootFolder(folder, filesTree, allAccessibleFiles);
 
         console.timeEnd("readFS");
-        fs.writeFile('testFilesTree.txt', JSON.stringify(filesTree, null, "\t"), function(err){if (err) throw err;});
-        fs.writeFile('testFiles.txt', JSON.stringify(allAccessibleFiles, null, "\t"), function(err){if (err) throw err;});
+        // fs.writeFile('testFilesTree.txt', JSON.stringify(filesTree, null, "\t"), function(err){if (err) throw err;});
+        // fs.writeFile('testFiles.txt', JSON.stringify(allAccessibleFiles, null, "\t"), function(err){if (err) throw err;});
         // fs.writeFile('testObjects.txt', JSON.stringify(allObjects, null, "\t"), function(err){if (err) throw err;});
 
         // console.log(process.memoryUsage());
