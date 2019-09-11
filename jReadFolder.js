@@ -24,6 +24,7 @@ let readFolder = function(folder, options, callback){
     function initVars(){
         level = options.level !== undefined ? options.level : level;
         fileTypes = options.fileTypes !== undefined ? options.fileTypes : fileTypes;
+        for (let i = 0; i < fileTypes.length; i++) fileTypes[i] = '.' + fileTypes[i];
     }
 
     console.time("readFS");
@@ -120,7 +121,6 @@ let readFolder = function(folder, options, callback){
         let filenameNorm = filename.toLowerCase();
         let filenameNormLen = filenameNorm.length;
         let matches = fileTypes;
-        for (let i = 0; i < matches.length; i++) matches[i] = '.' + matches[i];
 
         let filenameEnding, mLength;
         for (let i = 0, len = matches.length; i < len; i++){

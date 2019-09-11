@@ -28,8 +28,11 @@ router.get('/filesNew', function(req, res, next){
     const sharedFolder = req.app.sharedFolder;
 
     let jrfOptions = {
-        // level: 3,        // if commented that all levels scanned
-        fileTypes: []       // if empty all files would be read
+        // if commented that all levels scanned
+        // level: 3,
+        // if empty all files would be read
+        fileTypes: ['mp4', 'avi', 'mkv', 'm4v', 'srt', 'pdf', 'zip', '7z', 'jpg', 'png', 'img', 'mp3', 'apk', 'mka', 'ac3', 'dmg', 'iso', 'exe', 'xml',
+            '001','002','003','004','005','006','007','008','009','010','011','012','013','014','015','016','017','018','019','020','021','022','023']
     };
     jReadFolder(sharedFolder, jrfOptions, function(data){
         res.send(data);
