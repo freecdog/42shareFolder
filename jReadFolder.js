@@ -16,6 +16,7 @@ let readFolder = function(folder, options, callback){
     let scheduledItems = 1;
     let itemsCounter = 0;
     let fileTypes = [];
+    let skipDirectories = [];
 
     let level = Number.MAX_SAFE_INTEGER;
 
@@ -25,6 +26,7 @@ let readFolder = function(folder, options, callback){
         level = options.level !== undefined ? options.level : level;
         fileTypes = options.fileTypes !== undefined ? options.fileTypes : fileTypes;
         for (let i = 0; i < fileTypes.length; i++) fileTypes[i] = '.' + fileTypes[i];
+        skipDirectories = options.skipDirectories !== undefined ? options.skipDirectories : skipDirectories;
     }
 
     console.time("readFS");
@@ -70,6 +72,22 @@ let readFolder = function(folder, options, callback){
             } else {
                 obj.stats = stats;
                 obj.isDirectory = stats.isDirectory();
+
+                let skipDir = false;
+                if (obj.isDirectory) {
+                    let index = obj.path.lastIndexOf(path.sep);
+                    let dirName = obj.path.substr(index+1, obj.path.length - index-1);
+                    for (let i = 0; i < skipDirectories.length; i++){
+                        if (skipDirectories[i] === dirName) {
+                            skipDir = true;
+                            break;
+                        }
+                    }
+                    if (skipDir){
+                        processItem(filesTree, obj);
+                        return;
+                    }
+                }
 
                 if (obj.isDirectory){
                     if (lvl >= level) {
