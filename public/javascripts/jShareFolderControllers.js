@@ -20,7 +20,9 @@
         function init(){
             $scope.data = {};
 
-            $http.get('/api/files')
+            // const url = "/api/files";
+            const url = "/api/filesNew";
+            $http.get(url)
                 .success(function(data){
 
                     function treeProcess(tree){
@@ -28,24 +30,29 @@
                             tree.roleName = tree.path;
                         }
                         if (tree.hasOwnProperty('children')){
-                            for (var i = 0; i < tree.children.length; i++){
+                            for (let i = 0; i < tree.children.length; i++){
                                 treeProcess(tree.children[i]);
                             }
                         } else {
                             tree.children = [];
-                            tree.size = (tree.stats.size / 1024 / 1024).toFixed(2);
+                            if (tree.stats !== undefined) {
+                                tree.size = (tree.stats.size / 1024 / 1024).toFixed(2);
+                            }
+                            // tree.size = (tree.stats.size / 1024 / 1024).toFixed(2);
                         }
                     }
-                    treeProcess(data.allObjects[0]);
+                    // treeProcess(data.allObjects[0]);     // for /api/files
+                    treeProcess(data.filesTree);
 
                     $scope.data = data;
 
-                    $scope.roleList = data.allObjects;
+                    // $scope.roleList = data.allObjects;   // for /api/files
+                    $scope.roleList = [data.filesTree];
 
-                    console.log('/api/files', $scope.data);
+                    console.log(url, $scope.data);
                 })
                 .error(function(err){
-                    console.log("/api/files failed :C, trying one more time, error:", err);
+                    console.log(`${url} failed :C, trying one more time, error:`, err);
                 });
         }
 

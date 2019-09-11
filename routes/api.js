@@ -23,12 +23,16 @@ router.get('/files', function(req, res, next){
     });
 });
 
-var jrf = require("../jReadFolder");
-router.get('/test', function(req, res, next){
-    var sharedFolder = req.app.sharedFolder;
+let jReadFolder = require("../jReadFolder");
+router.get('/filesNew', function(req, res, next){
+    const sharedFolder = req.app.sharedFolder;
 
-    jrf(sharedFolder, function(data){
-        res.send(`done, ${data.length}`);
+    let jrfOptions = {
+        // level: 3,        // if commented that all levels scanned
+        fileTypes: []       // if empty all files would be read
+    };
+    jReadFolder(sharedFolder, jrfOptions, function(data){
+        res.send(data);
     });
 });
 

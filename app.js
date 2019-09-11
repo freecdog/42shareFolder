@@ -44,7 +44,7 @@ function checkPathArgv(callback){
     //app.argPath = argPath;
 
     var pathIndexInArgv = process.argv.indexOf("--path");
-    if (pathIndexInArgv != -1) {
+    if (pathIndexInArgv !== -1) {
         var fs = require('fs');
 
         var pathToCheck = process.argv[pathIndexInArgv + 1];
