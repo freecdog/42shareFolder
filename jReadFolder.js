@@ -33,6 +33,8 @@ let readFolder = function(folder, options, callback){
         if (fileTypes.length > 0){
             filterTree(filesTree);
             filterFiles(allAccessibleFiles);
+            countValidElementsInDirectories(filesTree);
+            clearEmptyDirectories(filesTree);
         }
 
         cutRootFolder(folder, filesTree, allAccessibleFiles);
@@ -140,10 +142,46 @@ let readFolder = function(folder, options, callback){
             for (let i = 0; i < node.children.length; i++){
                 let child = node.children[i];
                 if (child.children !== undefined) {
-                    filterTree(child, node);
+                    filterTree(child);
                 } else {
                     if (isValidFile(child.path) === false){
                         delete node.children[i];
+                    }
+                }
+            }
+            removeEmptiesFromArray(node.children);
+        }
+    }
+
+    function countValidElementsInDirectories(node, parents){
+        let safeStack = parents !== undefined ? parents : [];
+
+        if (node.children !== undefined) {
+            if (node.count === undefined) node.count = 0;
+
+            for (let i = 0; i < node.children.length; i++) {
+                let child = node.children[i];
+                if (child.children !== undefined) {
+                    safeStack.push(node);
+                    countValidElementsInDirectories(child, safeStack);
+                    safeStack.pop();
+                } else {
+                    node.count++;
+                    for (let j = 0; j < safeStack.length; j++) safeStack[j].count++;
+                }
+            }
+        }
+    }
+
+    function clearEmptyDirectories(node){
+        if (node.children !== undefined) {
+            for (let i = 0; i < node.children.length; i++) {
+                let child = node.children[i];
+                if (child.children !== undefined) {
+                    if (child.count === 0){
+                        delete node.children[i];
+                    } else {
+                        clearEmptyDirectories(child);
                     }
                 }
             }
