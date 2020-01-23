@@ -5,8 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var multer = require('multer');
+var multerUpload = multer({ dest: 'uploads/' });
+
 var routes = require('./routes/index');
 var api = require('./routes/api');
+var upload = require('./routes/upload');
 
 var app = express();
 
@@ -64,23 +68,6 @@ function checkPathArgv(callback){
             } else {
                 callback({message: pathToCheck + ' not exist'}, null);
             }
-            //fs.open(pathToCheck, 'r', function(err, fd){
-            //    if (err) {
-            //        if (err.code === 'ENOENT') {
-            //            console.error(pathToCheck, 'does not exist');
-            //            //return;
-            //        }
-            //        //throw err;
-            //        callback(err, null);
-            //    } else {
-            //        argPath = {
-            //            pathInArgv: true,
-            //            path: pathToCheck
-            //        };
-            //        //console.log(argPath);
-            //        callback(null, argPath);
-            //    }
-            //});
         } else {
             callback({message: 'no path given'});
         }
@@ -91,6 +78,7 @@ function checkPathArgv(callback){
 
 app.use('/', routes);
 app.use('/api', api);
+app.use('/upload', upload);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
