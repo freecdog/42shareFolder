@@ -9,6 +9,7 @@ var path = require('path');
 var _ = require('underscore');
 var async = require('async');
 
+// probably obsolete, jReadFolder is the solution now
 router.get('/files', function(req, res, next){
     var sharedFolder = req.app.sharedFolder;
 

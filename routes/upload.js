@@ -13,8 +13,8 @@ var multer = require('multer');
 var multerDownloadFolder = path.join(__dirname, '..', 'uploads');
 var multerUpload = multer({ dest: multerDownloadFolder });
 
-router.post('/:name', multerUpload.single('zipped'), function(req, res){    // "zipped" is a formData field name
-//}, multerUpload.fields([{name: 'zipped', maxCount: 1}]), function(req, res){
+router.post('/', multerUpload.single('inputFileName'), function(req, res){    // "inputFileName" is a formData field name
+//}, multerUpload.fields([{name: 'inputFileName', maxCount: 1}]), function(req, res){
     if (req.file) {
         console.dir(req.file);
 
@@ -22,7 +22,7 @@ router.post('/:name', multerUpload.single('zipped'), function(req, res){    // "
 
         var recentFilePath = path.join(multerDownloadFolder, req.file.filename);
 
-        var name = req.params.name;
+        var name = req.file.originalname;
         var date = currentDateToStr();
         console.log("date:", date);
 
@@ -53,7 +53,7 @@ function currentDateToStr(){
     var day = d.getDate();
     if (day < 10) day = "0" + day;
     var time = d.toLocaleTimeString();
-    time = replaceAll(time, ":", "");
+    time = time.replace(/:/g, '');
     return year + month + day + time;
 }
 
@@ -109,6 +109,5 @@ function fscopy(src, dst, opts, cb) {
     fs.stat(dst, copyHelper);
 }
 function noop(){};
-
 
 module.exports = router;
