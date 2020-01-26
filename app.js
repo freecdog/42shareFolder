@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var multer = require('multer');
-var multerUpload = multer({ dest: 'uploads/' });
+var multerUpload = multer({ dest: path.join(__dirname, 'uploads')});
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
