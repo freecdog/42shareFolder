@@ -14,6 +14,11 @@ html(ng-app="jShareFolderApp")
         script(src='/javascripts/ui-bootstrap-tpls-0.12.0.js')
         script(src='/javascripts/angular.treeview.js')
     body()
+        div(id="upload")
+            form(action="/upload")
+                input(type="file" name="zipped")
+                input(type="submit")
+
         div(ng-controller="jShareFolderNewController")
             div(
                 data-angular-treeview="true"
