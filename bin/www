@@ -6,20 +6,27 @@
 
 var app = require('../app');
 var debug = require('debug')('42shareFolder:server');
+var fs = require('fs');
+var path = require('path');
 var http = require('http');
+var https = require('https');
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '25853');
+//var port = normalizePort(process.env.PORT || '25854');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
-
+//var privateKey  = fs.readFileSync(path.join(__dirname, 'private.key'));
+//var certificate = fs.readFileSync(path.join(__dirname, 'certificate.crt'));
+//var credentials = {key: privateKey, cert: certificate};
 var server = http.createServer(app);
+//var server = https.createServer(credentials, app);
 
 /**
  * Listen on provided port, on all network interfaces.
